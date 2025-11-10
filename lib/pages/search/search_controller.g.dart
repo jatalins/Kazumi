@@ -41,6 +41,29 @@ mixin _$SearchPageController on _SearchPageController, Store {
     });
   }
 
+  late final _$notShowWatchedBangumisAtom = Atom(
+      name: '_SearchPageController.notShowWatchedBangumis', context: context);
+
+  @override
+  bool get notShowWatchedBangumis {
+    _$notShowWatchedBangumisAtom.reportRead();
+    return super.notShowWatchedBangumis;
+  }
+
+  bool _notShowWatchedBangumisIsInitialized = false;
+
+  @override
+  set notShowWatchedBangumis(bool value) {
+    _$notShowWatchedBangumisAtom.reportWrite(
+        value,
+        _notShowWatchedBangumisIsInitialized
+            ? super.notShowWatchedBangumis
+            : null, () {
+      super.notShowWatchedBangumis = value;
+      _notShowWatchedBangumisIsInitialized = true;
+    });
+  }
+
   late final _$bangumiListAtom =
       Atom(name: '_SearchPageController.bangumiList', context: context);
 
@@ -101,6 +124,16 @@ mixin _$SearchPageController on _SearchPageController, Store {
         .run(() => super.clearSearchHistory());
   }
 
+  late final _$setNotShowWatchedBangumisAsyncAction = AsyncAction(
+      '_SearchPageController.setNotShowWatchedBangumis',
+      context: context);
+
+  @override
+  Future<void> setNotShowWatchedBangumis(bool value) {
+    return _$setNotShowWatchedBangumisAsyncAction
+        .run(() => super.setNotShowWatchedBangumis(value));
+  }
+
   late final _$_SearchPageControllerActionController =
       ActionController(name: '_SearchPageController', context: context);
 
@@ -116,10 +149,22 @@ mixin _$SearchPageController on _SearchPageController, Store {
   }
 
   @override
+  Set<String> loadWatchedBangumiNames() {
+    final _$actionInfo = _$_SearchPageControllerActionController.startAction(
+        name: '_SearchPageController.loadWatchedBangumiNames');
+    try {
+      return super.loadWatchedBangumiNames();
+    } finally {
+      _$_SearchPageControllerActionController.endAction(_$actionInfo);
+    }
+  }
+
+  @override
   String toString() {
     return '''
 isLoading: ${isLoading},
 isTimeOut: ${isTimeOut},
+notShowWatchedBangumis: ${notShowWatchedBangumis},
 bangumiList: ${bangumiList},
 searchHistories: ${searchHistories}
     ''';

@@ -132,6 +132,8 @@ abstract class _PlayerController with Store {
   Duration get playerDuration => mediaPlayer!.state.duration;
 
   // 播放器调试信息
+  /// LogLevel 0: 错误 1: 警告 2: 简略 3: 详细
+  int playerLogLevel = 2;
   @observable
   ObservableList<String> playerLog = ObservableList.of([]);
   @observable
@@ -170,6 +172,16 @@ abstract class _PlayerController with Store {
     buffer = Duration.zero;
     duration = Duration.zero;
     completed = false;
+    playerLogLevel = setting.get(SettingBoxKey.playerLogLevel, defaultValue: 2);
+    playerSpeed =
+        setting.get(SettingBoxKey.defaultPlaySpeed, defaultValue: 1.0);
+    aspectRatioType =
+        setting.get(SettingBoxKey.defaultAspectRatioType, defaultValue: 1);
+
+    buttonSkipTime =
+        setting.get(SettingBoxKey.buttonSkipTime, defaultValue: 80);
+    arrowKeySkipTime =
+        setting.get(SettingBoxKey.arrowKeySkipTime, defaultValue: 10);
     try {
       await dispose(disposeSyncPlayController: false);
     } catch (_) {}
@@ -187,16 +199,6 @@ abstract class _PlayerController with Store {
     getDanDanmakuByBgmBangumiID(
         videoPageController.bangumiItem.id, episodeFromTitle);
     mediaPlayer ??= await createVideoController(offset: offset);
-
-    playerSpeed =
-        setting.get(SettingBoxKey.defaultPlaySpeed, defaultValue: 1.0);
-    aspectRatioType =
-        setting.get(SettingBoxKey.defaultAspectRatioType, defaultValue: 1);
-        
-    buttonSkipTime =
-        setting.get(SettingBoxKey.buttonSkipTime, defaultValue: 80);
-    arrowKeySkipTime =
-        setting.get(SettingBoxKey.arrowKeySkipTime, defaultValue: 10);
 
     if (Utils.isDesktop()) {
       volume = volume != -1 ? volume : 100;
@@ -302,7 +304,7 @@ abstract class _PlayerController with Store {
       configuration: PlayerConfiguration(
         bufferSize: lowMemoryMode ? 15 * 1024 * 1024 : 1500 * 1024 * 1024,
         osc: false,
-        logLevel: MPVLogLevel.info,
+        logLevel: MPVLogLevel.values[playerLogLevel],
       ),
     );
 
@@ -400,9 +402,18 @@ abstract class _PlayerController with Store {
     this.playerSpeed = playerSpeed;
     try {
       mediaPlayer!.setRate(playerSpeed);
+      updateDanmakuSpeed();
     } catch (e) {
       KazumiLogger().log(Level.error, '设置播放速度失败 ${e.toString()}');
     }
+  }
+
+  void updateDanmakuSpeed() {
+    final baseDuration = setting.get(SettingBoxKey.danmakuDuration, defaultValue: 8.0);
+    final followSpeed = setting.get(SettingBoxKey.danmakuFollowSpeed, defaultValue: true);
+
+    final duration = followSpeed ? (baseDuration ~/ playerSpeed) : baseDuration.toInt();
+    danmakuController.updateOption(danmakuController.option.copyWith(duration: duration));
   }
 
   Future<void> setVolume(double value) async {

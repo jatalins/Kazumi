@@ -224,11 +224,13 @@ class SettingBoxKey {
       danmakuMassive = 'danmakuMassive',
       danmakuArea = 'danmakuArea',
       danmakuColor = 'danmakuColor',
+      danmakuDuration = 'danmakuDuration',
       danmakuEnabledByDefault = 'danmakuEnabledByDefault',
       danmakuBiliBiliSource = 'danmakuBiliBiliSource',
       danmakuGamerSource = 'danmakuGamerSource',
       danmakuDanDanSource = 'danmakuDanDanSource',
       danmakuFontWeight = 'danmakuFontWeight',
+      danmakuFollowSpeed = 'danmakuFollowSpeed',
       themeMode = 'themeMode',
       themeColor = 'themeColor',
       privateMode = 'privateMode',
@@ -255,5 +257,7 @@ class SettingBoxKey {
       androidEnableOpenSLES = 'androidEnableOpenSLES',
       defaultSuperResolutionType = 'defaultSuperResolutionType',
       superResolutionWarn = 'superResolutionWarn',
-      playerDisableAnimations = 'playerDisableAnimations';
+      playerDisableAnimations = 'playerDisableAnimations',
+      playerLogLevel = 'playerLogLevel',
+      searchNotShowWatchedBangumis = 'searchNotShowWatchedBangumis';
 }
